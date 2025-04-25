@@ -1,8 +1,10 @@
 package com.example.FirstApi.controller;
 
+import com.example.FirstApi.controller.Interface.IBaseController;
 import com.example.FirstApi.model.Product;
 import com.example.FirstApi.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-public class ProductController {
+@Tag(name = "Product", description = "Endpoints de produto")
+public class ProductController implements IBaseController<Product> {
 
     private final ProductService productService;
 
@@ -25,9 +28,8 @@ public class ProductController {
     @GetMapping("/{id}")
     @Operation(summary = "Buscar produto por ID")
     public ResponseEntity<Product> getById(@PathVariable Long id) {
-        return productService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Product product = productService.findById(id);
+        return product!=null ? ResponseEntity.ok(product) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
@@ -39,18 +41,12 @@ public class ProductController {
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar produto existente")
     public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
-        return productService.findById(id)
-                .map(existing -> {
-                    product.setId(existing.getId());
-                    return ResponseEntity.ok(productService.save(product));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        return null;
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Excluir produto")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        productService.delete(id);
-        return ResponseEntity.noContent().build();
+    public String delete(@PathVariable Long id) {
+        return productService.delete(id);
     }
 }

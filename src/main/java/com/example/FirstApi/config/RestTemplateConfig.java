@@ -1,4 +1,4 @@
-package com.example.FirstApi.Config;
+package com.example.FirstApi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
